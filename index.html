@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fundamentos de Bases de Datos | Esquemas y arquitectura ANSI-SPARC</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="contenedor">
+        <header>
+            <div class="decoracion-hoja hoja1">🍂</div>
+            <div class="decoracion-hoja hoja2">🎃</div>
+            <div class="decoracion-hoja hoja3">🍁</div>
+            <h1>Fundamentos de Bases de Datos</h1>
+            <p class="subtitulo-hero">Esquemas, arquitectura de 3 niveles, independencia de datos y ciclo de vida del diseño.</p>
+            <p><strong>Tecnológico Nacional de México, Campus Delicias</strong></p>
+            <p class="meta">Materia: Fundamentos de Bases de Datos | Profesor: Jesus Jose Contreras Martinez</p>
+            <p class="equipo">Equipo: Leonel Parra, Silvia González, Dariel Torres, Jesús Alvarez</p>
+        </header>
+
+        <div class="resumen-chips">
+            <span class="chip">ANSI-SPARC</span>
+            <span class="chip">Independencia lógica y física</span>
+            <span class="chip">Modelos relacional y NoSQL</span>
+            <span class="chip">Ciclo de vida + CASE</span>
+        </div>
+
+        <nav class="tabs-nav" aria-label="Temas del material">
+            <button class="tab-btn active" onclick="openTab(event, 'tab1')">1. Introducción</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab2')">2. 3 niveles</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab3')">3. Conceptual</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab4')">4. Tipos de esquemas</button>
+            <button class="tab-btn" onclick="openTab(event, 'tab5')">5. Diseño y ciclo</button>
+            <button class="tab-btn evaluacion" onclick="openTab(event, 'tab6')">📝 Evaluación</button>
+        </nav>
+
+        <div id="tab1" class="tab-content active">
+            <h2>1. Introducción: de los datos al modelo</h2>
+            <p class="lead">Una base de datos es un conjunto organizado de datos relacionados que permite almacenar, consultar, actualizar y administrar información. No se trata solo de “hacer tablas”: hay que analizar necesidades, definir datos, establecer relaciones, controlar seguridad y dejar espacio para que el sistema evolucione.</p>
+
+            <div class="dato-clave">
+                <span>🎯</span>
+                <div>
+                    <strong>Objetivo de un buen diseño:</strong>
+                    <p>Representar fielmente la realidad, mantener integridad, ofrecer buen rendimiento y permitir cambios futuros. La base de datos es un sistema vivo, no un archivo estático.</p>
+                </div>
+            </div>
+
+            <div class="grid-info">
+                <article class="tarjeta">
+                    <h3>Base de datos</h3>
+                    <p>Almacena información estructurada. En una escuela: alumnos, profesores, materias, grupos, inscripciones y calificaciones, recuperables con consistencia.</p>
+                </article>
+                <article class="tarjeta">
+                    <h3>SGBD / DBMS</h3>
+                    <p>Software que crea estructuras, ejecuta SQL, aplica integridad, controla usuarios, administra transacciones, respalda y recupera. Ejemplos: PostgreSQL, MySQL, Oracle, SQL Server, MongoDB, Redis, Neo4j.</p>
+                </article>
+                <article class="tarjeta">
+                    <h3>Modelo de datos</h3>
+                    <p>Forma de representar cómo se organizan los datos y sus relaciones: relacional, jerárquico, red, documental, clave-valor, grafos, dimensional, etc.</p>
+                </article>
+            </div>
+
+            <h4>Entidad, atributo, relación y cardinalidad</h4>
+            <p>El modelo Entidad-Relación (ER) es la herramienta del diseño conceptual. Una <strong>entidad</strong> es un objeto identificable (Cliente, Producto). Un <strong>atributo</strong> lo describe (nombre, correo). Una <strong>relación</strong> conecta entidades. La <strong>cardinalidad</strong> indica cuántas veces participa cada una: 1:1, 1:N o N:M.</p>
+            <p>Una relación N:M casi siempre se convierte en una entidad intermedia. Alumno y Materia se unen con <strong>Inscripción</strong> (id_alumno, id_materia, fecha, calificación).</p>
+
+            <div class="bloque-didactico bloque-ejemplo">
+                <h3>📚 Ejemplo visual: escuela TecNM Delicias</h3>
+                <div class="caja-visual">
+                    <div class="er-visual">
+                        <div class="er-entidad">
+                            <strong>ALUMNO</strong><br>
+                            <span class="pk">PK id_alumno</span><br>
+                            nombre, correo
+                        </div>
+                        <div class="er-cardinalidad">N</div>
+                        <div class="er-relacion">INSCRIPCIÓN</div>
+                        <div class="er-cardinalidad">N</div>
+                        <div class="er-entidad">
+                            <strong>MATERIA</strong><br>
+                            <span class="pk">PK id_materia</span><br>
+                            nombre
+                        </div>
+                    </div>
+                    <table class="diagrama-tabla">
+                        <tr>
+                            <th>ALUMNO</th>
+                            <th>MATERIA</th>
+                            <th>INSCRIPCIÓN</th>
+                        </tr>
+                        <tr>
+                            <td><span class="pk">1</span> Leonel</td>
+                            <td><span class="pk">101</span> Bases de Datos</td>
+                            <td><span class="fk">id_alumno 1</span> → <span class="fk">id_materia 101</span> | 95</td>
+                        </tr>
+                        <tr>
+                            <td><span class="pk">2</span> Silvia</td>
+                            <td><span class="pk">102</span> Redes</td>
+                            <td><span class="fk">id_alumno 1</span> → <span class="fk">id_materia 102</span> | 88</td>
+                        </tr>
+                    </table>
+                    <p>La clave primaria identifica cada fila. La clave foránea conecta tablas sin duplicar toda la ficha del alumno en cada materia.</p>
+                </div>
+            </div>
+
+            <div class="bloque-didactico bloque-ejemplo">
+                <h3>🏛️ Ejemplo de requisitos: biblioteca (no basta con “registrar libros”)</h3>
+                <div class="caja-visual">
+                    <p>Antes de crear tablas hay que aclarar reglas del negocio:</p>
+                    <ul>
+                        <li>¿Un libro puede tener varios ejemplares?</li>
+                        <li>¿Un autor puede escribir varios libros?</li>
+                        <li>¿Cuántos días dura un préstamo y qué pasa si se entrega tarde?</li>
+                        <li>¿Se conservan préstamos históricos?</li>
+                    </ul>
+                    <p>Sin esas respuestas, el esquema queda incompleto aunque “compile” el SQL.</p>
+                </div>
+            </div>
+
+            <div class="bloque-didactico bloque-ejercicio">
+                <h3>✍️ Problema 1: entidades de un hospital</h3>
+                <p>Diseña la base de un hospital. Propón al menos 4 entidades, un atributo clave de cada una y una relación N:M que necesite tabla intermedia.</p>
+                <details>
+                    <summary>Ver una solución válida</summary>
+                    <div class="respuesta-ejercicio">
+                        Entidades: <strong>Paciente</strong> (id_paciente), <strong>Médico</strong> (id_medico), <strong>Cita</strong> (id_cita, fecha), <strong>Medicamento</strong> (id_medicamento).<br>
+                        Relación N:M: un paciente puede recibir muchos medicamentos y un medicamento se receta a muchos pacientes → tabla <strong>Receta</strong> o <strong>Tratamiento</strong> (id_paciente, id_medicamento, dosis, fecha).
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <div id="tab2" class="tab-content">
+            <h2>2. Arquitectura ANSI-SPARC de 3 niveles</h2>
+            <p class="lead">La arquitectura de tres niveles separa lo que ve cada usuario, la estructura lógica global y el almacenamiento físico. El objetivo principal es la <strong>independencia de datos</strong>: cambiar un nivel sin reescribir el superior. Los <strong>mapeos</strong> traducen peticiones entre capas.</p>
+
+            <div class="bloque-didactico bloque-ejemplo">
+                <h3>🔍 Diagrama completo: de la pantalla al disco</h3>
+                <div class="caja-visual">
+                    <div class="diagrama-3niveles">
+                        <div class="nivel-caja nivel-ext">Nivel externo
+                            <small>Vistas por usuario o aplicación: portal del alumno, pantalla del cajero, reporte de gerencia. No ve toda la base.</small>
+                        </div>
+                        <div class="mapeo">↕ Mapeo externo / conceptual</div>
+                        <div class="nivel-caja nivel-con">Nivel conceptual
+                            <small>Esquema lógico global: entidades, relaciones, CHECK, UNIQUE, PRIMARY KEY. Independiente del disco. Lo define el DBA.</small>
+                        </div>
+                        <div class="mapeo">↕ Mapeo conceptual / físico</div>
+                        <div class="nivel-caja nivel-int">Nivel interno (físico)
+                            <small>Archivos, índices B-Tree, particiones, compresión, páginas de disco, réplicas. Cómo se guarda realmente.</small>
+                        </div>
+                    </div>
+                    <div class="vistas-externas">
+                        <div class="vista-card">
+                            <strong>Vista alumno</strong>
+                            <p>Solo ve sus materias y calificaciones. No ve sueldos ni índices.</p>
+                        </div>
+                        <div class="vista-card">
+                            <strong>Vista cajero</strong>
+                            <p>Ve productos, precios y existencias. No ve el historial médico ni el plan de ejecución SQL.</p>
+                        </div>
+                        <div class="vista-card">
+                            <strong>Vista DBA</strong>
+                            <p>Administra el esquema conceptual y decide índices, respaldos y permisos en el nivel interno.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="comparacion">
+                <article class="tarjeta">
+                    <h4>Nivel externo</h4>
+                    <p>El más cercano al usuario. Pantallas, reportes y APIs. Varios esquemas externos pueden coexistir sobre el mismo esquema conceptual.</p>
+                </article>
+                <article class="tarjeta">
+                    <h4>Nivel interno</h4>
+                    <p>El más bajo. Define almacenamiento, direccionamiento, índices y particiones. Un cambio de HDD a SSD ocurre aquí, no en la interfaz.</p>
+                </article>
+            </div>
+
+            <div class="bloque-didactico bloque-ejercicio">
+                <h3>✍️ Problema 2: clasifica cada situación (clic)</h3>
+                <p>Elige si ocurre en el nivel <strong>externo</strong> o en el <strong>interno</strong>. Recibirás retroalimentación inmediata.</p>
+                <div class="interactivo" id="clasifica-niveles">
+                    <div class="item-clasificar" data-ok="interno">
+                        <p>El DBA comprime la tabla de historial para ahorrar disco.</p>
+                        <div class="botones-opcion">
+                            <button type="button" data-val="externo">Externo</button>
+                            <button type="button" data-val="interno">Interno</button>
+                        </div>
+                    </div>
+                    <div class="item-clasificar" data-ok="externo">
+                        <p>Un estudiante consulta calificaciones en el celular.</p>
+                        <div class="botones-opcion">
+                            <button type="button" data-val="externo">Externo</button>
+                            <button type="button" data-val="interno">Interno</button>
+                        </div>
+                    </div>
+                    <div class="item-clasificar" data-ok="interno">
+                        <p>PostgreSQL crea un índice B-Tree sobre el correo.</p>
+                        <div class="botones-opcion">
+                            <button type="button" data-val="externo">Externo</button>
+                            <button type="button" data-val="interno">Interno</button>
+                        </div>
+                    </div>
+                    <div class="item-clasificar" data-ok="externo">
+                        <p>El reporte de gerencia oculta el RFC de los empleados.</p>
+                        <div class="botones-opcion">
+                            <button type="button" data-val="externo">Externo</button>
+                            <button type="button" data-val="interno">Interno</button>
+                        </div>
+                    </div>
+                    <div class="item-clasificar" data-ok="interno">
+                        <p>Se particiona la tabla de ventas por año en el SSD.</p>
+                        <div class="botones-opcion">
+                            <button type="button" data-val="externo">Externo</button>
+                            <button type="button" data-val="interno">Interno</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab3" class="tab-content">
+            <h2>3. Nivel conceptual e independencia de datos</h2>
+            <p class="lead">El nivel conceptual es la representación abstracta e integral de toda la base: qué datos se almacenan y cómo se relacionan, <em>sin</em> decir cómo se guardan en disco. Es independiente de hardware y software. Solo el DBA define este nivel; describe la estructura para todos los usuarios.</p>
+
+            <h4>Dos fases de modelado en el nivel conceptual</h4>
+            <div class="comparacion">
+                <article class="tarjeta">
+                    <h4>1. MER / DER</h4>
+                    <p>Rectángulos (entidades), rombos (relaciones) y elipses (atributos). Describe el negocio sin escribir SQL.</p>
+                </article>
+                <article class="tarjeta">
+                    <h4>2. Esquema conceptual (DDL)</h4>
+                    <p>Se materializa con <code>CREATE TABLE</code>, PRIMARY KEY, FOREIGN KEY, UNIQUE y CHECK. Sigue siendo lógico, no físico.</p>
+                </article>
+            </div>
+
+            <div class="bloque-didactico bloque-ejemplo">
+                <h3>🛡️ Independencia: el mapeo absorbe el cambio</h3>
+                <div class="caja-visual">
+                    <p>En archivos tradicionales, cambiar el formato en disco obligaba a reescribir las aplicaciones. Aquí el SGBD actualiza solo el mapeo.</p>
+                    <div class="independencia">
+                        <div class="caja-esquema">
+                            <strong>Esquema conceptual</strong><br>
+                            id_cliente<br>
+                            nombre<br>
+                            <span class="campo-nuevo">+ edad (campo nuevo)</span>
+                        </div>
+                        <div class="flecha">➡</div>
+                        <div class="caja-vista">
+                            <strong>Vista externa (caja)</strong><br>
+                            Sigue mostrando id_cliente y nombre.<br>
+                            <em>La app de ventas no se rompe.</em>
+                        </div>
+                    </div>
+                    <div class="comparacion" style="margin-top:16px">
+                        <article class="tarjeta">
+                            <h4>Independencia lógica</h4>
+                            <p>Cambiar el esquema conceptual (agregar tabla o columna, dividir una entidad) sin modificar vistas externas ni aplicaciones. El mapeo externo/conceptual se actualiza.</p>
+                        </article>
+                        <article class="tarjeta">
+                            <h4>Independencia física</h4>
+                            <p>Cambiar el nivel interno (HDD→SSD, índices, particiones) sin tocar el esquema conceptual ni las pantallas. El mapeo conceptual/físico se actualiza.</p>
+                        </article>
+                    </div>
+                </div>
+            </div>
+
+            <div class="dato-clave">
+                <span>🧩</span>
+                <div>
+                    <strong>No confundir con diseño conceptual / lógico / físico del ciclo de vida.</strong>
+                    <p>ANSI-SPARC habla de capas en tiempo de ejecución. El ciclo de vida habla de etapas de proyecto: primero se modela el negocio, luego tablas, luego índices. Se parecen, pero no son lo mismo.</p>
+                </div>
+            </div>
+
+            <div class="bloque-didactico bloque-ejercicio">
+                <h3>✍️ Problema 3: ¿lógica o física?</h3>
+                <p>Para cada caso, decide el tipo de independencia. Piensa qué mapeo se actualiza.</p>
+                <ol>
+                    <li>La empresa cambia HDD por SSD y el formato de archivos. El software de ventas no se toca.</li>
+                    <li>Se agrega la columna <code>edad</code> a Cliente. El kiosco de autoservicio sigue mostrando solo nombre y precio.</li>
+                    <li>Se crea un índice sobre <code>VENTA.fecha</code> para acelerar reportes mensuales.</li>
+                    <li>La tabla Empleado se parte en Empleado y Departamento (3FN). Las vistas de RH se redefinen en el mapeo, no en cada pantalla.</li>
+                </ol>
+                <details>
+                    <summary>Ver respuestas</summary>
+                    <div class="respuesta-ejercicio">
+                        1. <strong>Física</strong> (hardware y archivos).<br>
+                        2. <strong>Lógica</strong> (cambia el esquema conceptual; la vista externa no).<br>
+                        3. <strong>Física</strong> (índice = estructura interna).<br>
+                        4. <strong>Lógica</strong> (reestructura de tablas; las apps siguen pidiendo los mismos datos lógicos vía vistas).
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <div id="tab4" class="tab-content">
+            <h2>4. Tipos de esquemas según el modelo de datos</h2>
+            <p class="lead">El esquema es la descripción de la estructura. Distintos modelos sirven a distintos problemas: consistencia bancaria, documentos web, amigos-de-amigos o analítica de un almacén de datos.</p>
+
+            <h4>Modelos clásicos</h4>
+            <div class="esquemas-grid">
+                <article class="esquema-card">
+                    <span class="tag">Clásico</span>
+                    <h3>Relacional</h3>
+                    <p>Tablas 2D, filas y columnas. PK, FK y normalización. Estándar en MySQL, PostgreSQL y SQL Server. Ideal cuando la consistencia es crítica (banco, nómina, escuela).</p>
+                </article>
+                <article class="esquema-card">
+                    <span class="tag">Clásico</span>
+                    <h3>Jerárquico</h3>
+                    <p>Árbol padre-hijo 1:N. Cada hijo tiene un solo padre. Rígido para relaciones complejas. Aparece en sistemas antiguos.</p>
+                </article>
+                <article class="esquema-card">
+                    <span class="tag">Clásico</span>
+                    <h3>En red</h3>
+                    <p>Grafo: un hijo puede tener varios padres (N:M). Extiende al jerárquico para interconexiones complejas. Típico en sistemas heredados.</p>
+                </article>
+            </div>
+
+            <h4>Objetos, NoSQL y dimensionales</h4>
+            <div class="esquemas-grid">
+                <article class="esquema-card">
+                    <span class="tag">OO / híbrido</span>
+                    <h3>Orientado a objetos</h3>
+                    <p>Clases, atributos, métodos, herencia y encapsulamiento. El objeto-relacional mezcla tablas con tipos definidos por el usuario.</p>
+                </article>
+                <article class="esquema-card">
+                    <span class="tag">NoSQL</span>
+                    <h3>Documentos</h3>
+                    <p>Colecciones JSON/BSON (MongoDB). Flexible cuando el documento no cabe en filas rígidas.</p>
+                </article>
+                <article class="esquema-card">
+                    <span class="tag">NoSQL</span>
+                    <h3>Clave-valor</h3>
+                    <p>Pareja clave → valor. Muy rápido para caché y sesiones (Redis).</p>
+                </article>
+                <article class="esquema-card">
+                    <span class="tag">NoSQL</span>
+                    <h3>Grafos</h3>
+                    <p>Nodos y aristas. Redes sociales, rutas, “amigos de amigos” (Neo4j).</p>
+                </article>
+                <article class="esquema-card">
+                    <span class="tag">NoSQL</span>
+                    <h3>Columnar</h3>
+                    <p>Datos por columna, no por fila. Analítica masiva (Cassandra, almacenes columnares).</p>
+                </article>
+                <article class="esquema-card">
+                    <span class="tag">DW</span>
+                    <h3>Estrella y copo de nieve</h3>
+                    <p>Estrella: hechos al centro y dimensiones alrededor. Copo: las dimensiones se normalizan en subtablas. Pensados para Business Intelligence.</p>
+                </article>
+            </div>
+
+            <div class="bloque-didactico bloque-ejemplo">
+                <h3>🧩 Ejemplo: mismo empleado, dos modelos</h3>
+                <div class="caja-visual">
+                    <p><strong>Relacional</strong> (normalizado): habilidades en tabla aparte.</p>
+                    <table class="diagrama-tabla">
+                        <tr><th>EMPLEADO</th><th>HABILIDAD_EMPLEADO</th></tr>
+                        <tr>
+                            <td><span class="pk">405</span> Jesús Alvarez | DBA</td>
+                            <td><span class="fk">405</span>-Java, <span class="fk">405</span>-SQL, <span class="fk">405</span>-Redes</td>
+                        </tr>
+                    </table>
+                    <p><strong>Documento NoSQL</strong> (anidado en un JSON):</p>
+                    <pre class="diagrama-json">{
+  "id_empleado": 405,
+  "nombre": "Jesús Alvarez",
+  "rol": "Administrador DBA",
+  "habilidades": ["Java", "SQL", "Redes"]
+}</pre>
+                    <p><strong>Estrella (ventas)</strong>: una tabla de hechos rodeada de dimensiones.</p>
+                    <div class="estrella">
+                        <div class="dimensiones">
+                            <span>DIM Tiempo</span>
+                            <span>DIM Cliente</span>
+                            <span>DIM Producto</span>
+                            <span>DIM Sucursal</span>
+                        </div>
+                        <div class="hechos">HECHOS_VENTA<br><small>cantidad, importe, id_tiempo, id_cliente…</small></div>
+                    </div>
+                    <p>El copo de nieve partiría, por ejemplo, Producto → Categoría → Departamento, con más joins y menos redundancia.</p>
+                </div>
+            </div>
+
+            <div class="bloque-didactico bloque-ejercicio">
+                <h3>✍️ Problema 4: elige el esquema</h3>
+                <p>Relaciona necesidad y modelo. Hay más de una trampa deliberada.</p>
+                <ol>
+                    <li>Red social: “amigos de amigos” a millones de usuarios.</li>
+                    <li>Banco: consistencia absoluta, filas, columnas y reglas estrictas.</li>
+                    <li>Tienda: analítica histórica de ventas con tiempo, cliente y producto (BI).</li>
+                    <li>Sitio web: perfiles de usuario con campos que cambian cada mes, guardados como JSON.</li>
+                    <li>Caché de sesiones de login que debe responder en microsegundos.</li>
+                    <li>IMS antiguo de un mainframe con departamentos y un solo jefe por empleado.</li>
+                </ol>
+                <details>
+                    <summary>Ver respuestas</summary>
+                    <div class="respuesta-ejercicio">
+                        1. Grafos · 2. Relacional · 3. Estrella (dimensional) · 4. Documentos · 5. Clave-valor · 6. Jerárquico.
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <div id="tab5" class="tab-content">
+            <h2>5. Herramientas, normalización y ciclo de vida</h2>
+            <p class="lead">El diseño convierte una necesidad de información en una estructura eficiente. Se recorre en tres niveles de proyecto: conceptual (independiente del SGBD), lógico (tablas y claves) y físico (índices, particiones, memoria, respaldos).</p>
+
+            <h4>Herramientas</h4>
+            <ul>
+                <li><strong>Requisitos:</strong> entrevistas, casos de uso, prototipos, observación de procesos.</li>
+                <li><strong>Diccionario de datos:</strong> nombre, tipo, longitud, obligatoriedad y restricciones de cada campo.</li>
+                <li><strong>ER y UML:</strong> comunicación con usuarios y con programadores.</li>
+                <li><strong>CASE:</strong> MySQL Workbench, pgModeler, DBeaver, ERwin, Draw.io… generan diagramas y a veces SQL.</li>
+                <li><strong>SQL y migraciones:</strong> <code>V1__crear_clientes.sql</code>, Flyway o Liquibase para no cambiar producción a mano.</li>
+            </ul>
+
+            <div class="bloque-didactico bloque-ejemplo">
+                <h3>⚙️ Diccionario + SQL mínimo</h3>
+                <div class="caja-visual">
+                    <table class="diagrama-tabla">
+                        <tr>
+                            <th>Campo</th><th>Tipo</th><th>Longitud</th><th>Restricciones</th>
+                        </tr>
+                        <tr><td>id_alumno</td><td>Entero</td><td>—</td><td>Obligatorio, PK</td></tr>
+                        <tr><td>nombre</td><td>Texto</td><td>80</td><td>No vacío</td></tr>
+                        <tr><td>correo</td><td>Texto</td><td>120</td><td>Formato válido, UNIQUE</td></tr>
+                    </table>
+                    <pre class="codigo-sql">CREATE TABLE Cliente (
+  id_cliente INTEGER PRIMARY KEY,
+  nombre VARCHAR(100) NOT NULL,
+  correo VARCHAR(150) UNIQUE
+);
+
+CREATE INDEX idx_cliente_correo ON Cliente(correo);</pre>
+                    <p>El índice acelera búsquedas, pero ocupa espacio y puede ralentizar INSERT/UPDATE. No se crean “por si acaso”.</p>
+                </div>
+            </div>
+
+            <h4>Normalización (calidad del diseño)</h4>
+            <div class="comparacion">
+                <article class="tarjeta">
+                    <h4>1FN</h4>
+                    <p>Valores atómicos, sin listas en una celda. Incorrecto: <code>materias = "Mate, Física"</code>. Correcto: una fila por materia.</p>
+                </article>
+                <article class="tarjeta">
+                    <h4>2FN</h4>
+                    <p>Todo atributo depende de <em>toda</em> la clave primaria (clave compuesta).</p>
+                </article>
+                <article class="tarjeta">
+                    <h4>3FN</h4>
+                    <p>Nada depende de un no-clave. El nombre del departamento no se copia en cada empleado: va en tabla Departamento.</p>
+                </article>
+            </div>
+            <p>Normalizar reduce anomalías de inserción, actualización y borrado. Desnormalizar solo con justificación (rendimiento analítico) y controles.</p>
+
+            <h4>Ciclo de vida</h4>
+            <div class="timeline">
+                <div class="paso"><div class="paso-num">1</div><p><strong>Planificación y alcance.</strong> Objetivo, presupuesto, riesgos. ¿Base nueva o producto comercial?</p></div>
+                <div class="paso"><div class="paso-num">2</div><p><strong>Análisis de requisitos.</strong> Datos, usuarios, reportes, confidencialidad, volumen de transacciones.</p></div>
+                <div class="paso"><div class="paso-num">3</div><p><strong>Diseño C-L-F y elección del SGBD.</strong> Modelo ER → tablas → índices. Licencia, seguridad, escalabilidad.</p></div>
+                <div class="paso"><div class="paso-num">4</div><p><strong>Implementación y carga.</strong> Tablas, permisos, procedimientos, migración validada.</p></div>
+                <div class="paso"><div class="paso-num">5</div><p><strong>Pruebas.</strong> Unitarias, integración, rendimiento y seguridad. Probar también la restauración de respaldos.</p></div>
+                <div class="paso"><div class="paso-num">6</div><p><strong>Operación, mantenimiento y retiro.</strong> Monitoreo, mínimo privilegio, versionado. Al final, archivo y apagado controlado.</p></div>
+            </div>
+
+            <div class="bloque-didactico bloque-ejemplo">
+                <h3>🛒 Caso: sistema de ventas</h3>
+                <div class="caja-visual">
+                    <p><strong>Lógico:</strong> CLIENTE, VENTA, PRODUCTO, DETALLE_VENTA (cantidad, precio_unitario). Un cliente muchas ventas; una venta muchos renglones; un producto en muchos detalles.</p>
+                    <p><strong>Físico:</strong> índices en fecha y id_cliente; no permitir existencias negativas; respaldo diario; roles distintos para vendedor y admin.</p>
+                    <pre class="codigo-sql">BEGIN;
+INSERT INTO Venta VALUES (1001, 10, CURRENT_DATE);
+INSERT INTO Detalle_Venta VALUES (1001, 25, 2, 150.00);
+UPDATE Producto
+   SET existencia = existencia - 2
+ WHERE id_producto = 25 AND existencia >= 2;
+COMMIT;  -- si falla algo: ROLLBACK</pre>
+                </div>
+            </div>
+
+            <div class="bloque-didactico bloque-problema">
+                <h3>⚠️ Problemas frecuentes vs buenas prácticas</h3>
+                <div class="comparacion">
+                    <article class="tarjeta">
+                        <h4>Evitar</h4>
+                        <ul>
+                            <li>Crear tablas sin requisitos</li>
+                            <li>Sin PK, nulos sin control, varios valores en una columna</li>
+                            <li>Permisos excesivos y cambios directos en producción</li>
+                            <li>Nunca probar restaurar un backup</li>
+                        </ul>
+                    </article>
+                    <article class="tarjeta">
+                        <h4>Practicar</h4>
+                        <ul>
+                            <li>Involucrar usuarios y documentar reglas</li>
+                            <li>Separar conceptual, lógico y físico</li>
+                            <li>Restricciones en la base, no solo en la app</li>
+                            <li>Versionar, mínimo privilegio, medir rendimiento</li>
+                        </ul>
+                    </article>
+                </div>
+            </div>
+
+            <div class="bloque-didactico bloque-ejercicio">
+                <h3>✍️ Problema 5: ordena el ciclo y detecta el error</h3>
+                <p><strong>A)</strong> Ordena: Implementación · Mantenimiento · Planificación/análisis · Pruebas · Diseño C-L-F.</p>
+                <p><strong>B)</strong> Esta tabla viola 1FN. ¿Cómo la corriges?</p>
+                <table class="diagrama-tabla">
+                    <tr><th>id_alumno</th><th>nombre</th><th>materias</th></tr>
+                    <tr><td>1</td><td>Carlos</td><td>Matemáticas, Física</td></tr>
+                </table>
+                <details>
+                    <summary>Ver respuestas</summary>
+                    <div class="respuesta-ejercicio">
+                        A) Planificación/análisis → Diseño → Implementación → Pruebas → Mantenimiento.<br>
+                        B) Una fila por materia (o tabla INSCRIPCION). Nunca una lista separada por comas en un campo.
+                    </div>
+                </details>
+            </div>
+        </div>
+
+        <div id="tab6" class="tab-content">
+            <h2>📝 Evaluación integral</h2>
+            <p>18 preguntas. Al enviar verás aciertos, barra de calificación y la explicación de cada ítem. Puedes reintentar.</p>
+
+            <form id="quiz-form">
+                <h3 class="tema-quiz">Introducción</h3>
+                <div class="pregunta-contenedor" data-exp="Una BD organiza datos relacionados para almacenar, consultar, actualizar y administrar; no es hardware ni un programa de ataque.">
+                    <div class="pregunta-texto">1. ¿Qué es una base de datos?</div>
+                    <div class="opciones">
+                        <label><input type="radio" name="q1" value="a"> Un software exclusivo para atacantes.</label>
+                        <label><input type="radio" name="q1" value="b"> Conjunto organizado de datos relacionados que permite almacenar, consultar y administrar información.</label>
+                        <label><input type="radio" name="q1" value="c"> Un dispositivo instalado dentro de la RAM.</label>
+                    </div>
+                </div>
+                <div class="pregunta-contenedor" data-exp="El diseño empieza por requisitos, reglas de negocio, seguridad y evolución, no por dibujar tablas al azar.">
+                    <div class="pregunta-texto">2. Crear una base de datos exige, antes que nada…</div>
+                    <div class="opciones">
+                        <label><input type="radio" name="q2" value="a"> Un análisis de las necesidades de la organización.</label>
+                        <label><input type="radio" name="q2" value="b"> Instalar el máximo de discos posible.</label>
+                        <label><input type="radio" name="q2" value="c"> Comprar una licencia de diseño gráfico.</label>
+                    </div>
+                </div>
+                <div class="pregunta-contenedor" data-exp="SGBD/DBMS: PostgreSQL, MySQL, Oracle, etc. Crea estructuras, SQL, integridad, usuarios, transacciones y respaldos.">
+                    <div class="pregunta-texto">3. ¿Qué significan las siglas SGBD?</div>
+                    <div class="opciones">
+                        <label><input type="radio" name="q3" value="a"> Sistema Generador de Bases Dinámicas.</label>
+                        <label><input type="radio" name="q3" value="b"> Sistema Gestor de Bases de Datos.</label>
+                        <label><input type="radio" name="q3" value="c"> Standard Global Based Data.</label>
+                    </div>
+                </div>
+                <div class="pregunta-contenedor" data-exp="N:M se resuelve con entidad intermedia (Inscripción, DetalleVenta, Receta).">
+                    <div class="pregunta-texto">4. Alumnos y materias (muchos a muchos) se modelan con…</div>
+                    <div class="opciones">
+                        <label><input type="radio" name="q4" value="a"> Una sola tabla con una columna de listas.</label>
+                        <label><input type="radio" name="q4" value="b"> Una entidad intermedia (por ejemplo Inscripción) con claves foráneas.</label>
+                        <label><input type="radio" name="q4" value="c"> Un índice B-Tree sin tablas.</label>
+                    </div>
+                </div>
+
+                <h3 class="tema-quiz">Arquitectura de 3 niveles</h3>
+                <div class="pregunta-contenedor" data-exp="El nivel externo son las vistas individuales: pantallas y reportes de cada tipo de usuario.">
+                    <div class="pregunta-texto">5. El nivel más cercano al usuario final es…</div>
+                    <div class="opciones">
+                        <label><input type="radio" name="q5" value="a"> Nivel interno.</label>
+                        <label><input type="radio" name="q5" value="b"> Nivel conceptual.</label>
+                        <label><input type="radio" name="q5" value="c"> Nivel externo.</label>
+                    </div>
+                </div>
+                <div class="pregunta-contenedor" data-exp="Interno = almacenamiento, índices, direccionamiento de disco, particiones, compresión.">
+                    <div class="pregunta-texto">6. El nivel interno o físico define…</div>
+                    <div class="opciones">
+                        <label><input type="radio" name="q6" value="a"> Los colores de la interfaz.</label>
+                        <label><input type="radio" name="q6" value="b"> Almacenamiento, índices, direccionamiento de disco y particiones.</label>
+                        <label><input type="radio" name="q6" value="c"> Solo los diagramas UML de la app.</label>
+                    </div>
+                </div>
+                <div class="pregunta-contenedor" data-exp="Los mapeos traducen entre externo-conceptual y conceptual-físico. Si un nivel cambia, se actualiza el mapeo, no toda la pila.">
+                    <div class="pregunta-texto">7. ¿Qué traduce peticiones entre niveles?</div>
+                    <div class="opciones">
+                        <label><input type="radio" name="q7" value="a"> Los mapeos.</label>
+                        <label><input type="radio" name="q7" value="b"> El disco duro por sí mismo.</label>
+                        <label><input type="radio" name="q7" value="c"> El usuario final.</label>
+                    </div>
+                </div>
+
+                <h3 class="tema-quiz">Conceptual e independencia</h3>
+                <div class="pregunta-contenedor" data-exp="Visión global, entidades, relaciones y restricciones. Independiente del disco. Lo define el DBA.">
+                    <div class="pregunta-texto">8. El nivel conceptual es…</div>
+                    <div class="opciones">
+                        <label><input type="radio" name="q8" value="a"> El código binario de la PC.</label>
+                        <label><input type="radio" name="q8" value="b"> La representación lógica global de entidades, relaciones y reglas.</label>
+                        <label><input type="radio" name="q8" value="c"> Únicamente la pantalla del celular del cliente.</label>
+                    </div>
+                </div>
+                <div class="pregunta-contenedor" data-exp="ANSI/SPARC existe sobre todo para lograr independencia de datos frente a los sistemas de archivos rígidos.">
+                    <div class="pregunta-texto">9. Objetivo principal de la arquitectura de 3 niveles:</div>
+                    <div class="opciones">
+                        <label><input type="radio" name="q9" value="a"> Programar más rápido a mano.</label>
+                        <label><input type="radio" name="q9" value="b"> La independencia de datos.</label>
+                        <label><input type="radio" name="q9" value="c"> Reducir el tamaño de la RAM del usuario.</label>
+                    </div>
+                </div>
+                <div class="pregunta-contenedor" data-exp="Independencia lógica: cambia el esquema conceptual sin romper vistas externas. Física: cambia el almacenamiento sin tocar lo lógico.">
+                    <div class="pregunta-texto">10. “Cambiar el esquema conceptual sin modificar las vistas externas” es…</div>
+                    <div class="opciones">
+                        <label><input type="radio" name="q10" value="a"> Independencia lógica.</label>
+                        <label><input type="radio" name="q10" value="b"> Independencia física.</label>
+                        <label><input type="radio" name="q10" value="c"> Un diagrama UML.</label>
+                    </div>
+                </div>
+                <div class="pregunta-contenedor" data-exp="MER usa rectángulos, rombos y elipses. El DDL (CREATE TABLE) es la otra fase, ya en el SGBD.">
+                    <div class="pregunta-texto">11. En el MER, las relaciones se dibujan habitualmente como…</div>
+                    <div class="opciones">
+                        <label><input type="radio" name="q11" value="a"> Rombos.</label>
+                        <label><input type="radio" name="q11" value="b"> Círculos de índice B-Tree.</label>
+                        <label><input type="radio" name="q11" value="c"> Particiones de disco.</label>
+                    </div>
+                </div>
+
+                <h3 class="tema-quiz">Tipos de esquemas</h3>
+                <div class="pregunta-contenedor" data-exp="Relacional: tablas, PK/FK, normalización. Es el estándar más usado en entornos empresariales transaccionales.">
+                    <div class="pregunta-texto">12. MySQL/PostgreSQL organizando filas y columnas corresponde al esquema…</div>
+                    <div class="opciones">
+                        <label><input type="radio" name="q12" value="a"> Relacional.</label>
+                        <label><input type="radio" name="q12" value="b"> En red.</label>
+                        <label><input type="radio" name="q12" value="c"> Jerárquico.</label>
+                    </div>
+                </div>
+                <div class="pregunta-contenedor" data-exp="MongoDB guarda documentos JSON/BSON en colecciones.">
+                    <div class="pregunta-texto">13. Colecciones JSON/BSON son propias del esquema…</div>
+                    <div class="opciones">
+                        <label><input type="radio" name="q13" value="a"> Orientado a documentos.</label>
+                        <label><input type="radio" name="q13" value="b"> Columnar.</label>
+                        <label><input type="radio" name="q13" value="c"> Clave-valor.</label>
+                    </div>
+                </div>
+                <div class="pregunta-contenedor" data-exp="Estrella: tabla de hechos central + dimensiones. Copo de nieve normaliza esas dimensiones en subtablas.">
+                    <div class="pregunta-texto">14. Tabla de hechos rodeada de dimensiones (Data Warehouse):</div>
+                    <div class="opciones">
+                        <label><input type="radio" name="q14" value="a"> Copo de nieve (definición exacta).</label>
+                        <label><input type="radio" name="q14" value="b"> Grafos.</label>
+                        <label><input type="radio" name="q14" value="c"> Esquema en estrella.</label>
+                    </div>
+                </div>
+                <div class="pregunta-contenedor" data-exp="Los grafos modelan nodos y aristas; encajan en redes sociales y rutas.">
+                    <div class="pregunta-texto">15. Analizar “quién es amigo de quién” a gran escala encaja con…</div>
+                    <div class="opciones">
+                        <label><input type="radio" name="q15" value="a"> Jerárquico estricto 1:N.</label>
+                        <label><input type="radio" name="q15" value="b"> Esquema de grafos.</label>
+                        <label><input type="radio" name="q15" value="c"> Solo un archivo CSV.</label>
+                    </div>
+                </div>
+
+                <h3 class="tema-quiz">Herramientas y ciclo</h3>
+                <div class="pregunta-contenedor" data-exp="El diccionario documenta tipo, longitud, obligatoriedad y restricciones de cada campo.">
+                    <div class="pregunta-texto">16. El documento que fija tipo, longitud y restricciones de cada campo es…</div>
+                    <div class="opciones">
+                        <label><input type="radio" name="q16" value="a"> El manual de usuario de Windows.</label>
+                        <label><input type="radio" name="q16" value="b"> El diccionario de datos.</label>
+                        <label><input type="radio" name="q16" value="c"> La consola de comandos vacía.</label>
+                    </div>
+                </div>
+                <div class="pregunta-contenedor" data-exp="Workbench, pgModeler, ERwin, DBeaver, etc. Word y Photoshop no son CASE de modelado de BD.">
+                    <div class="pregunta-texto">17. Herramienta CASE típica para modelar bases de datos:</div>
+                    <div class="opciones">
+                        <label><input type="radio" name="q17" value="a"> Microsoft Word.</label>
+                        <label><input type="radio" name="q17" value="b"> MySQL Workbench.</label>
+                        <label><input type="radio" name="q17" value="c"> Adobe Photoshop.</label>
+                    </div>
+                </div>
+                <div class="pregunta-contenedor" data-exp="1FN exige atomicidad: un valor por celda. Las listas van a otra tabla o a otra fila.">
+                    <div class="pregunta-texto">18. La tabla con la columna materias = "Mate, Física" viola…</div>
+                    <div class="opciones">
+                        <label><input type="radio" name="q18" value="a"> La primera forma normal.</label>
+                        <label><input type="radio" name="q18" value="b"> El nivel externo ANSI-SPARC.</label>
+                        <label><input type="radio" name="q18" value="c"> El esquema en estrella.</label>
+                    </div>
+                </div>
+
+                <div class="acciones-quiz">
+                    <button type="button" class="btn-enviar" onclick="calificarQuiz()">Revisar respuestas</button>
+                    <button type="button" class="btn-secundario" onclick="reiniciarQuiz()">Reintentar</button>
+                </div>
+            </form>
+
+            <div id="resultado-quiz">
+                <div id="resultado-texto"></div>
+                <div class="progreso" aria-hidden="true"><span id="barra-progreso"></span></div>
+            </div>
+        </div>
+
+        <footer>
+            Material de apoyo basado en la investigación del equipo y en los temas de arquitectura ANSI-SPARC, tipos de esquemas y ciclo de vida. Ciudad Delicias, Chihuahua.
+        </footer>
+    </div>
+
+    <script>
+        function openTab(evt, tabId) {
+            var tabcontent = document.getElementsByClassName("tab-content");
+            for (var i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+                tabcontent[i].classList.remove("active");
+            }
+            var tablinks = document.getElementsByClassName("tab-btn");
+            for (var i = 0; i < tablinks.length; i++) {
+                tablinks[i].classList.remove("active");
+            }
+            document.getElementById(tabId).style.display = "block";
+            document.getElementById(tabId).classList.add("active");
+            evt.currentTarget.classList.add("active");
+            window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        document.getElementById("clasifica-niveles").addEventListener("click", function (e) {
+            var btn = e.target.closest("button");
+            if (!btn) return;
+            var item = btn.closest(".item-clasificar");
+            var ok = item.getAttribute("data-ok");
+            var val = btn.getAttribute("data-val");
+            item.querySelectorAll("button").forEach(function (b) {
+                b.classList.remove("correcta", "incorrecta");
+            });
+            var prev = item.querySelector(".feedback-mini");
+            if (prev) prev.remove();
+            var fb = document.createElement("div");
+            fb.className = "feedback-mini";
+            if (val === ok) {
+                btn.classList.add("correcta");
+                fb.textContent = "Correcto: pertenece al nivel " + ok + ".";
+            } else {
+                btn.classList.add("incorrecta");
+                fb.textContent = "No: mira si cambia la pantalla del usuario (externo) o el disco/índices (interno).";
+            }
+            item.appendChild(fb);
+        });
+
+        const correctas = {
+            q1: "b", q2: "a", q3: "b", q4: "b",
+            q5: "c", q6: "b", q7: "a",
+            q8: "b", q9: "b", q10: "a", q11: "a",
+            q12: "a", q13: "a", q14: "c", q15: "b",
+            q16: "b", q17: "b", q18: "a"
+        };
+
+        function calificarQuiz() {
+            var total = 18;
+            var form = document.getElementById("quiz-form");
+            var resultado = document.getElementById("resultado-quiz");
+            var texto = document.getElementById("resultado-texto");
+            var barra = document.getElementById("barra-progreso");
+            var aciertos = 0;
+            var incompletas = false;
+            var bloques = form.querySelectorAll(".pregunta-contenedor");
+
+            bloques.forEach(function (bloque, idx) {
+                var name = "q" + (idx + 1);
+                var elegido = form.elements[name].value;
+                var exp = bloque.getAttribute("data-exp");
+                var extra = bloque.querySelector(".explicacion-quiz");
+                if (!extra) {
+                    extra = document.createElement("div");
+                    extra.className = "explicacion-quiz";
+                    bloque.appendChild(extra);
+                }
+                bloque.classList.remove("bien", "mal");
+                extra.style.display = "none";
+
+                if (!elegido) {
+                    incompletas = true;
+                    return;
+                }
+                var bien = elegido === correctas[name];
+                if (bien) aciertos++;
+                bloque.classList.add(bien ? "bien" : "mal");
+                extra.style.display = "block";
+                extra.innerHTML = (bien ? "✅ " : "❌ ") + exp;
+            });
+
+            resultado.style.display = "block";
+            if (incompletas) {
+                resultado.style.backgroundColor = "#fff3cd";
+                resultado.style.color = "#856404";
+                texto.textContent = "Faltan preguntas. Completa las 18 para calificar.";
+                barra.style.width = "0%";
+                resultado.scrollIntoView({ behavior: "smooth", block: "center" });
+                return;
+            }
+
+            var calificacion = Math.round((aciertos / total) * 100);
+            barra.style.width = calificacion + "%";
+
+            if (calificacion >= 90) {
+                resultado.style.backgroundColor = "#e8f5e9";
+                resultado.style.color = "var(--verde-exito)";
+                texto.textContent = "Excelente: " + aciertos + "/" + total + " (" + calificacion + "/100). Dominas ANSI-SPARC, esquemas y ciclo de vida.";
+            } else if (calificacion >= 70) {
+                resultado.style.backgroundColor = "#fff8e1";
+                resultado.style.color = "var(--naranja-oscuro)";
+                texto.textContent = "Bien: " + aciertos + "/" + total + " (" + calificacion + "/100). Revisa las explicaciones en rojo y las pestañas 3 y 4.";
+            } else {
+                resultado.style.backgroundColor = "#ffebee";
+                resultado.style.color = "var(--rojo-error)";
+                texto.textContent = "Hay que reforzar: " + aciertos + "/" + total + " (" + calificacion + "/100). Vuelve a los ejemplos y reintenta.";
+            }
+            resultado.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+
+        function reiniciarQuiz() {
+            var form = document.getElementById("quiz-form");
+            form.reset();
+            form.querySelectorAll(".pregunta-contenedor").forEach(function (b) {
+                b.classList.remove("bien", "mal");
+                var exp = b.querySelector(".explicacion-quiz");
+                if (exp) exp.style.display = "none";
+            });
+            document.getElementById("resultado-quiz").style.display = "none";
+            document.getElementById("barra-progreso").style.width = "0%";
+        }
+    </script>
+</body>
+</html>
